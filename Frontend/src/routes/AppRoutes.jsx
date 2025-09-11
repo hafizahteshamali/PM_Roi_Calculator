@@ -6,8 +6,7 @@ import InputState from '../pages/InputState'
 const AppRoutes = () => {
   return (
     <Routes>
-      <Route path='/' element={<ROI />} />
-      <Route path='/input_state' element={<InputState />} />
+      <Route path='/' element={<InputState />} />
     </Routes>
   )
 }

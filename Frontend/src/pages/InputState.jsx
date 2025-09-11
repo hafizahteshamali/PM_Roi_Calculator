@@ -45,14 +45,33 @@ const InputState = () => {
   const [costs, setCosts] = useState(0);
   const [savings, setSavings] = useState(0);
 
+  // Enhanced calculation logic
   const handleCalculate = () => {
     if (!criticalMachines) {
       alert("Bitte wählen Sie eine kritische Maschinenoption aus!");
       return;
     }
 
-    // calculation based on selected critical machine and pressure
-    const downtimeCost = criticalMachines * 70000 * pressure;
+    // Base assumptions
+    const avgDowntimeHours = 20; // avg downtime per month per machine
+    const costPerHour = 3500; // € per downtime hour
+    const months = 12; // yearly cost
+
+    // Energy & Scrap savings (simplified)
+    const energySavingPercent = 0.1; // 10%
+    const scrapSavingPercent = 0.05; // 5%
+
+    // Step 1: Calculate annual downtime cost
+    let downtimeCost =
+      criticalMachines * avgDowntimeHours * costPerHour * pressure * months;
+
+    // Step 2: Apply energy & scrap savings
+    const energyScrapSavings = downtimeCost * (energySavingPercent + scrapSavingPercent);
+
+    // Step 3: Total avoidable cost
+    downtimeCost = downtimeCost + energyScrapSavings;
+
+    // Step 4: Expected saving (conservative 60% reduction)
     const saving = downtimeCost * 0.6;
 
     setCosts(downtimeCost);
