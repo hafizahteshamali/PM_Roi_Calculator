@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 import { FaCheckCircle } from "react-icons/fa";
-import { InputStateData } from "../assets/ConstantData";
+import {
+  industries,
+  InputStateData,
+  pressureData,
+  production_FlowData,
+} from "../assets/ConstantData";
 import { NavLink } from "react-router-dom";
 
 const steps = [
@@ -14,9 +19,9 @@ const InputState = () => {
 
   return (
     <div className="w-full lg:h-screen lg:overflow-hidden flex items-center justify-center px-4 sm:px-6 md:px-10 lg:px-20 py-6 sm:py-8 md:py-10">
-      <div className="lg:h-[95vh] w-full lg:w-[90%]">
+      <div className="lg:h-[95vh] w-full lg:w-[100%]">
         {/* Stepper */}
-        <div className="w-full sm:w-[90%] lg:w-[75%] flex flex-col sm:flex-row flex-wrap items-start lg:items-center justify-start mb-5 gap-3">
+        <div className="w-full sm:w-[90%] lg:w-[95%] flex flex-row flex-wrap items-center justify-center mb-5 gap-5">
           {steps.map((step, index) => (
             <div
               key={step.id}
@@ -25,13 +30,14 @@ const InputState = () => {
             >
               {/* Circle */}
               <div
-                className={`flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full text-white font-bold 
-          ${activeStep === step.id
+                className={`flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full text-white font-bold
+                ${
+                  activeStep === step.id
                     ? "bg-[#382A4D]"
                     : activeStep > step.id
-                      ? "bg-green-500"
-                      : "bg-gray-300"
-                  }`}
+                    ? "bg-green-500"
+                    : "bg-gray-300"
+                }`}
               >
                 {activeStep > step.id ? <FaCheckCircle /> : step.id}
               </div>
@@ -39,10 +45,11 @@ const InputState = () => {
               {/* Title */}
               <p
                 className={`ml-2 text-sm sm:text-base lg:text-[16px] whitespace-nowrap
-          ${activeStep === step.id
+                ${
+                  activeStep === step.id
                     ? "text-[#382A4D] font-semibold"
                     : "text-gray-500"
-                  }`}
+                }`}
               >
                 {step.title}
               </p>
@@ -55,38 +62,35 @@ const InputState = () => {
           ))}
         </div>
 
-
-        <div className="w-full max-w-6xl h-auto lg:h-[90%] flex flex-col lg:flex-row gap-6 lg:gap-8">
+        <div className="w-full h-auto lg:h-[90%] flex flex-col lg:flex-row gap-6 lg:gap-5">
           {/* LEFT CONTENT */}
-          <div className="flex-1 p-5 sm:p-6 md:p-8 lg:p-12 bg-white rounded-xl shadow-lg">
-            {/* Dynamic Step Content */}
+          <div className="flex w-full rounded shadow bg-white">
+            {/* Step 1 */}
             {activeStep === 1 && (
-              <div>
-                <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-[500] leading-snug text-gray-800 mb-3">
+              <div className="lg:m-10 p-5 lg:p-0">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-[500] w-[80%] lg:leading-16 text-gray-800 mb-6">
                   {InputStateData.heading}
                 </h2>
                 <p className="text-gray-600 text-sm sm:text-base mb-6">
                   {InputStateData.subtitle}
                 </p>
-                <ul className="space-y-3 text-gray-700 mb-6 text-sm sm:text-base">
-                  {InputStateData.bullets.map((item, index) => {
-                    return (
-                      <li
-                        key={index}
-                        className="flex justify-start items-center gap-2.5"
-                      >
-                        <img src={item.icon} alt="" className="w-4 sm:w-5" />
-                        {item.text}
-                      </li>
-                    );
-                  })}
+                <ul className="space-y-3 text-gray-700 mb-6 text-sm sm:text-[16px]">
+                  {InputStateData.bullets.map((item, index) => (
+                    <li
+                      key={index}
+                      className="flex justify-start items-center gap-2.5"
+                    >
+                      <img src={item.icon} alt="" className="w-4 sm:w-5" />
+                      {item.text}
+                    </li>
+                  ))}
                 </ul>
                 <p className="text-xs sm:text-sm text-gray-500 mb-6">
                   {InputStateData.subtitle2}
                 </p>
                 <button
                   onClick={() => setActiveStep(2)}
-                  className="bg-[#382A4D] hover:bg-purple-700 text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded shadow-md font-medium text-sm sm:text-base"
+                  className="bg-[#382A4D] hover:bg-purple-700 text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded shadow-md font-medium text-sm sm:text-base mb-6"
                 >
                   {InputStateData.btnText}
                 </button>
@@ -106,59 +110,235 @@ const InputState = () => {
               </div>
             )}
 
+            {/* Step 2 */}
             {activeStep === 2 && (
-              <div>
-                <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-3">
-                  Berechnung läuft...
-                </h2>
-                <p className="text-gray-600 text-sm sm:text-base">
-                  Bitte warten Sie, während wir Ihre Daten verarbeiten.
-                </p>
-                <button
-                  onClick={() => setActiveStep(3)}
-                  className="mt-6 bg-purple-600 hover:bg-purple-700 text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg shadow-md font-medium text-sm sm:text-base"
-                >
-                  Weiter
-                </button>
+              <div className="w-full mx-auto bg-white px-5 py-1 rounded">
+                <div className="w-[95%] mx-auto">
+                  {/* Q1 */}
+                  <h2 className="text-lg font-semibold my-2 text-[#00000081]">
+                    1. In welcher Branche ist Ihr Unternehmen tätig?
+                  </h2>
+                  <div className="flex flex-wrap justify-start gap-x-5">
+                    {industries.map((item, index) => (
+                      <button
+                        key={index}
+                        className={`w-full sm:w-[45%] md:w-[30%] lg:w-[27%] h-[70px] mb-3 flex justify-center items-center gap-2 border border-gray-300 rounded text-sm hover:bg-purple-50 ${
+                          item.hoverr && "bg-[#F2E4FE]"
+                        }`}
+                      >
+                        <img src={item.icon} alt="" />
+                        <span>{item.c_name}</span>
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Q2 */}
+                  <h2 className="text-lg font-semibold my-2 text-[#00000081]">
+                    2. Wie viele Ihrer Anlagen sind für den Produktionsfluss
+                    absolut kritisch?
+                  </h2>
+                  <div className="flex flex-wrap gap-3">
+                    {production_FlowData.map((item, index) => (
+                      <button
+                        key={index}
+                        className={`flex flex-col justify-center items-start w-full lg:w-[29%] border border-gray-300 rounded px-5 py-3 text-sm hover:bg-purple-50 ${
+                          item.dark && "bg-[#F2E4FE]"
+                        }`}
+                      >
+                        <p className="text-[16px] font-[400] text-left">
+                          {item.text}
+                        </p>
+                        <p className="text-[#00000070]">{item.subtitle}</p>
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Q3 - Slider */}
+                  <h2 className="text-lg font-semibold my-2 text-[#00000081]">
+                    3. Wie oft geraten Sie pro Monat unter Druck?
+                  </h2>
+                  <div className="w-full">
+                    {/* Large screen → horizontal */}
+                    <div className="hidden md:block w-full">
+                      <input
+                        type="range"
+                        min="0"
+                        max="4"
+                        step="any"
+                        defaultValue="1"
+                        className="w-full h-1 accent-[#382A4D]"
+                      />
+                      <div className="flex justify-between text-xs sm:text-sm text-gray-600 mt-2">
+                        {pressureData.map((item, index) => (
+                          <div
+                            key={index}
+                            className="flex justify-center items-center gap-2 w-max"
+                          >
+                            <img src={item.imgIcon} alt="" />
+                            <div className="flex flex-col justify-start items-start">
+                              <p>{item.text}</p>
+                              <p className="text-[#00000081] text-sm">
+                                {item.subtitle}
+                              </p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Mobile → vertical */}
+                    <div className="flex md:hidden flex-row items-center gap-4 w-full">
+                      {/* Vertical Slider */}
+                      <div className="h-[220px] flex items-center">
+                        <input
+                          type="range"
+                          min="0"
+                          max="4"
+                          step="any"
+                          defaultValue="1"
+                          orient="vertical"
+                          className="appearance-none w-2 h-[220px] accent-[#382A4D]"
+                          style={{
+                            writingMode: "bt-lr",
+                            WebkitAppearance: "slider-vertical",
+                          }}
+                        />
+                      </div>
+
+                      {/* Text Content */}
+                      <div className="flex flex-col justify-between text-xs sm:text-sm text-gray-600 w-full gap-4">
+                        {pressureData.map((item, index) => (
+                          <div
+                            key={index}
+                            className="flex justify-start items-center gap-2"
+                          >
+                            <img src={item.imgIcon} alt="" />
+                            <div className="flex flex-col justify-start items-start">
+                              <p>{item.text}</p>
+                              <p className="text-[#00000081] text-sm">
+                                {item.subtitle}
+                              </p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Q4 */}
+                  <h2 className="text-lg font-semibold mt-5 mb-2 text-[#00000081]">
+                    4. Wie viele Ihrer Anlagen sind für den Produktionsfluss
+                    absolut kritisch?
+                  </h2>
+                  <select className="w-full border border-gray-300 rounded bg-[#F2E4FE] p-3 mb-2 outline-none">
+                    <option value="">Bitte wählen...</option>
+                    <option value="single">
+                      Eine einzelne Schlüsselmaschine
+                    </option>
+                    <option value="group">
+                      Eine kleine Gruppe (3–5 Maschinen)
+                    </option>
+                    <option value="area">
+                      Ein gesamter Bereich (&gt;10 Maschinen)
+                    </option>
+                  </select>
+
+                  {/* Calculate button */}
+                  <div className="w-full flex justify-end items-center">
+                    <button
+                      onClick={() => setActiveStep(3)}
+                      className="w-full lg:w-[30%] bg-[#382A4D] hover:bg-[#382a4de0] text-white px-6 py-3 rounded shadow-md font-medium"
+                    >
+                      Jetzt Berechnen
+                    </button>
+                  </div>
+                </div>
               </div>
             )}
 
             {activeStep === 3 && (
-              <div>
-                <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-3">
-                  Ihre Ergebnisse sind da 🎉
-                </h2>
-                <p className="text-gray-600 text-sm sm:text-base">
-                  Hier sehen Sie die wahren Kosten und Einsparungen.
+              <div className="p-6 w-full flex flex-col justify-center items-center">
+                {/* Result Boxes */}
+                <div className="flex flex-col lg:flex-row justify-around items-center gap-6 w-full mb-8">
+                  {/* Kosten Box */}
+                  <div className="flex flex-col justify-center items-center h-[250px] w-full sm:w-[80%] md:w-[70%] lg:w-[33%] bg-[#FBFBFB] shadow-md rounded-xl p-6 border border-gray-200 text-center">
+                    <p className="text-black text-sm mb-2 font-[700]">
+                      Ihre vermeidbaren Kosten pro Jahr:
+                    </p>
+                    <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-red-600">
+                      210.000 €
+                    </h3>
+                    <img
+                      src="/assets/images/bar.svg"
+                      alt=""
+                      className="max-h-[120px] my-2"
+                    />
+                    <p className="text-black text-xs sm:text-sm mt-2 font-[700]">
+                      Ungeplante Stillstände und Reparaturen schlagen hier zu
+                      Buche.
+                    </p>
+                  </div>
+
+                  {/* Arrow → only visible on large screens */}
+                  <div className="hidden lg:flex items-center justify-center text-3xl text-gray-500">
+                    <img src="/assets/images/formkit_arrowright.png" alt="" />
+                  </div>
+
+                  {/* Einsparpotenzial Box */}
+                  <div className="flex flex-col justify-center items-center h-[250px] w-full sm:w-[80%] md:w-[70%] lg:w-[33%] bg-white shadow-md rounded-xl p-6 border border-gray-200 text-center">
+                    <p className="text-black text-sm mb-2 font-[700]">
+                      Ihr mögliches Einsparpotenzial:
+                    </p>
+                    <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-green-600">
+                      126.000 €
+                    </h3>
+                    <img
+                      src="/assets/images/streamline-ultimate-color_saving-money-flower.svg"
+                      alt=""
+                      className="max-h-[120px] my-2"
+                    />
+                    <p className="text-black text-xs sm:text-sm mt-2 font-[700]">
+                      (bei nur 60 % Vermeidung von Ausfällen konservativ
+                      gerechnet)
+                    </p>
+                  </div>
+                </div>
+
+                {/* Info Text */}
+                <p className="text-gray-700 text-center text-base sm:text-lg md:text-xl font-medium leading-relaxed mb-6 w-full sm:w-[80%] md:w-[70%] lg:w-[70%] mx-auto">
+                  Predictive Maintenance bedeutet: weniger Ausfälle, planbare
+                  Wartung, mehr Produktion. Schon ein einzelner Pilotstart
+                  zeigt, wie schnell sich das rechnet.
                 </p>
-                <button
-                  onClick={() => setActiveStep(1)}
-                  className="mt-6 bg-purple-600 hover:bg-purple-700 text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg shadow-md font-medium text-sm sm:text-base"
-                >
-                  Neu starten
-                </button>
+
+                {/* CTA Button */}
+                <div className="flex justify-center">
+                  <button className="bg-[#382A4D] hover:bg-purple-700 text-white px-6 sm:px-10 py-3 rounded-lg shadow-md font-medium text-sm sm:text-base">
+                    Ja, ich will meine kostenlose Strategie
+                  </button>
+                </div>
               </div>
             )}
           </div>
 
           {/* RIGHT FIXED CONTENT */}
-          <div className="w-full lg:w-1/3 rounded-xl border-gray-200 px-5 sm:px-6 md:px-8 pt-4 sm:pt-5 flex flex-col justify-start items-center lg:items-start text-center lg:text-left">
-            <NavLink to="/input_state" className="mb-4">
+          <div className="w-full lg:w-[25%] rounded-xl flex flex-col justify-start items-start text-center lg:text-left">
+            <NavLink to="/input_state" className="mb-4 h-[150px]">
               <img
                 src="/assets/images/sclera_logo.svg"
                 alt=""
-                className="mx-auto lg:mx-0 w-28 sm:w-32 md:w-36"
+                className="mx-auto lg:mx-0"
               />
             </NavLink>
             <h3 className="text-lg sm:text-xl md:text-2xl font-[500] text-gray-800 mb-3">
               Wie anfällig ist Ihre Produktion wirklich?
             </h3>
-            <p className="text-gray-600 text-xs sm:text-sm md:text-base leading-relaxed mb-4 sm:mb-5">
-              Beantworten Sie drei kurze Fragen und erfahren Sie, wie hoch das Risiko
-              ungeplanter Ausfälle in Ihrem Betrieb ist – und welche Kosten dadurch
-              entstehen können.
+            <p className="text-gray-600 text-left text-xs sm:text-sm md:text-base leading-relaxed mb-4 sm:mb-5">
+              Beantworten Sie drei kurze Fragen und erfahren Sie, wie hoch das
+              Risiko ungeplanter Ausfälle in Ihrem Betrieb ist – und welche
+              Kosten dadurch entstehen können.
             </p>
-            <div className="h-[180px] sm:h-[220px] md:h-[250px] w-[60%] sm:w-[70%] mx-auto flex justify-center items-center">
+            <div className="h-[400px] sm:h-[220px] md:h-[310px] w-full mx-auto flex justify-center items-center">
               <img
                 src="/assets/images/production_img.png"
                 className="object-contain max-h-full"

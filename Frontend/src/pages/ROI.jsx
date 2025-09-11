@@ -136,6 +136,7 @@ const ROI = () => {
             type="range"
             min="1"
             max="10"
+            step="any" 
             value={isDownTimevalue}
             onChange={(e) => setIsDownTimevalue(Number(e.target.value))}
             className="w-[60%] lg:w-[80%] h-1 rounded-lg appearance-none cursor-pointer bg-gray-300"
