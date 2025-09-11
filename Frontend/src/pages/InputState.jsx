@@ -14,8 +14,52 @@ const steps = [
   { id: 3, title: "Ergebnisstatus" },
 ];
 
+const criticalOptions = [
+  {
+    label: "Eine einzelne Schlüsselmaschine",
+    subtitle: "(Ein Saustall-stoppt alles)",
+    value: 1,
+  },
+  {
+    label: "Eine kleine Gruppe",
+    subtitle: "(3-5 Maschinen)",
+    value: 3,
+  },
+  {
+    label: "Ein gesamter Bereich",
+    subtitle: "(10+ Maschinen)",
+    value: 10,
+  },
+];
+
 const InputState = () => {
   const [activeStep, setActiveStep] = useState(1);
+
+  // user inputs
+  const [selectedIndustry, setSelectedIndustry] = useState(null);
+  const [criticalMachines, setCriticalMachines] = useState(null);
+  const [pressure, setPressure] = useState(1);
+  const [area, setArea] = useState("");
+
+  // results
+  const [costs, setCosts] = useState(0);
+  const [savings, setSavings] = useState(0);
+
+  const handleCalculate = () => {
+    if (!criticalMachines) {
+      alert("Bitte wählen Sie eine kritische Maschinenoption aus!");
+      return;
+    }
+
+    // calculation based on selected critical machine and pressure
+    const downtimeCost = criticalMachines * 70000 * pressure;
+    const saving = downtimeCost * 0.6;
+
+    setCosts(downtimeCost);
+    setSavings(saving);
+
+    setActiveStep(3);
+  };
 
   return (
     <div className="w-full lg:h-screen lg:overflow-hidden flex items-center justify-center px-4 sm:px-6 md:px-10 lg:px-20 py-6 sm:py-8 md:py-10">
@@ -122,8 +166,12 @@ const InputState = () => {
                     {industries.map((item, index) => (
                       <button
                         key={index}
-                        className={`w-full sm:w-[45%] md:w-[30%] lg:w-[27%] h-[70px] mb-3 flex justify-center items-center gap-2 border border-gray-300 rounded text-sm hover:bg-purple-50 ${
-                          item.hoverr && "bg-[#F2E4FE]"
+                        onClick={() => setSelectedIndustry(item.c_name)}
+                        className={`w-full sm:w-[45%] md:w-[30%] lg:w-[27%] h-[70px] mb-3 flex justify-center items-center gap-2 border border-gray-300 rounded text-sm 
+                        ${
+                          selectedIndustry === item.c_name
+                            ? "bg-[#F2E4FE]"
+                            : "hover:bg-purple-50"
                         }`}
                       >
                         <img src={item.icon} alt="" />
@@ -132,23 +180,26 @@ const InputState = () => {
                     ))}
                   </div>
 
-                  {/* Q2 */}
+                  {/* Q2 - Critical Machines */}
                   <h2 className="text-lg font-semibold my-2 text-[#00000081]">
-                    2. Wie viele Ihrer Anlagen sind für den Produktionsfluss
-                    absolut kritisch?
+                    2. Wie viele Ihrer Anlagen sind für den Produktionsfluss absolut kritisch?
                   </h2>
                   <div className="flex flex-wrap gap-3">
-                    {production_FlowData.map((item, index) => (
+                    {criticalOptions.map((option, index) => (
                       <button
                         key={index}
-                        className={`flex flex-col justify-center items-start w-full lg:w-[29%] border border-gray-300 rounded px-5 py-3 text-sm hover:bg-purple-50 ${
-                          item.dark && "bg-[#F2E4FE]"
+                        onClick={() => setCriticalMachines(option.value)}
+                        className={`flex flex-col justify-center items-start w-full lg:w-[29%] border border-gray-300 rounded px-5 py-3 text-sm 
+                        ${
+                          criticalMachines === option.value
+                            ? "bg-[#F2E4FE]"
+                            : ""
                         }`}
                       >
                         <p className="text-[16px] font-[400] text-left">
-                          {item.text}
+                          {option.label}
                         </p>
-                        <p className="text-[#00000070]">{item.subtitle}</p>
+                        <p className="text-[#00000070]">{option.subtitle}</p>
                       </button>
                     ))}
                   </div>
@@ -162,10 +213,11 @@ const InputState = () => {
                     <div className="hidden md:block w-full">
                       <input
                         type="range"
-                        min="0"
+                        min="1"
                         max="4"
-                        step="any"
-                        defaultValue="1"
+                        step="1"
+                        value={pressure}
+                        onChange={(e) => setPressure(Number(e.target.value))}
                         className="w-full h-1 accent-[#382A4D]"
                       />
                       <div className="flex justify-between text-xs sm:text-sm text-gray-600 mt-2">
@@ -188,14 +240,14 @@ const InputState = () => {
 
                     {/* Mobile → vertical */}
                     <div className="flex md:hidden flex-row items-center gap-4 w-full">
-                      {/* Vertical Slider */}
                       <div className="h-[220px] flex items-center">
                         <input
                           type="range"
-                          min="0"
+                          min="1"
                           max="4"
-                          step="any"
-                          defaultValue="1"
+                          step="1"
+                          value={pressure}
+                          onChange={(e) => setPressure(Number(e.target.value))}
                           orient="vertical"
                           className="appearance-none w-2 h-[220px] accent-[#382A4D]"
                           style={{
@@ -227,10 +279,13 @@ const InputState = () => {
 
                   {/* Q4 */}
                   <h2 className="text-lg font-semibold mt-5 mb-2 text-[#00000081]">
-                    4. Wie viele Ihrer Anlagen sind für den Produktionsfluss
-                    absolut kritisch?
+                    4. Wie viele Ihrer Anlagen sind für den Produktionsfluss absolut kritisch?
                   </h2>
-                  <select className="w-full border border-gray-300 rounded bg-[#F2E4FE] p-3 mb-2 outline-none">
+                  <select
+                    value={area}
+                    onChange={(e) => setArea(e.target.value)}
+                    className="w-full border border-gray-300 rounded bg-[#F2E4FE] p-3 mb-2 outline-none"
+                  >
                     <option value="">Bitte wählen...</option>
                     <option value="single">
                       Eine einzelne Schlüsselmaschine
@@ -246,7 +301,7 @@ const InputState = () => {
                   {/* Calculate button */}
                   <div className="w-full flex justify-end items-center">
                     <button
-                      onClick={() => setActiveStep(3)}
+                      onClick={handleCalculate}
                       className="w-full lg:w-[30%] bg-[#382A4D] hover:bg-[#382a4de0] text-white px-6 py-3 rounded shadow-md font-medium"
                     >
                       Jetzt Berechnen
@@ -256,6 +311,7 @@ const InputState = () => {
               </div>
             )}
 
+            {/* Step 3 - Results */}
             {activeStep === 3 && (
               <div className="p-6 w-full flex flex-col justify-center items-center">
                 {/* Result Boxes */}
@@ -266,7 +322,7 @@ const InputState = () => {
                       Ihre vermeidbaren Kosten pro Jahr:
                     </p>
                     <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-red-600">
-                      210.000 €
+                      {costs.toLocaleString()} €
                     </h3>
                     <img
                       src="/assets/images/bar.svg"
@@ -290,7 +346,7 @@ const InputState = () => {
                       Ihr mögliches Einsparpotenzial:
                     </p>
                     <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-green-600">
-                      126.000 €
+                      {savings.toLocaleString()} €
                     </h3>
                     <img
                       src="/assets/images/streamline-ultimate-color_saving-money-flower.svg"
