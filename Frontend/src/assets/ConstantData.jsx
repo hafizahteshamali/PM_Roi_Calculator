@@ -3,53 +3,53 @@ export const InputStateData = {
     subtitle: "Finden Sie es in weniger als einer Minute heraus.",
     bullets: [
         {
-            icon: "/assets/images/subway_tick.svg",
+            icon: "/roi-calculator/assets/images/subway_tick.svg",
             text: "Welche Anlage eignet sich am besten für einen Pilotstart?"
         },
         {
-            icon: "/assets/images/subway_tick.svg",
+            icon: "/roi-calculator/assets/images/subway_tick.svg",
             text: "Wie viel kosten ungeplante Ausfälle wirklich?"
         },
         {
-            icon: "/assets/images/subway_tick.svg",
+            icon: "/roi-calculator/assets/images/subway_tick.svg",
             text: "Wie schnell rechnet sich Predictive Maintenance bei Ihnen?"
         },
     ],
     subtitle2: "Sie erhalten keinen Sales-Call, sondern eine maßgeschneiderte Strategie.",
     btnText: "Jetzt kostenlosen Pilot-Check starten",
-    caseStudyIcon: "/assets/images/wave.png",
+    caseStudyIcon: "/roi-calculator/assets/images/wave.png",
     caseStudyText: "Ich möchte erst eine Case Study sehen",
     caseStudyLink: "/input_state"
 }
 
 export const industries = [
     {
-        icon: "/assets/images/icon-park_delivery.svg",
+        icon: "/roi-calculator/assets/images/icon-park_delivery.svg",
         c_name: "Automobil & Zulieferer",
         hoverr: false
     },
     {
-        icon: "/assets/images/bottle.svg",
+        icon: "/roi-calculator/assets/images/bottle.svg",
         c_name: "Kunststoff-verarbeitung",
         hoverr: true
     },
     {
-        icon: "/assets/images/ion_fast-food-outline.svg",
+        icon: "/roi-calculator/assets/images/ion_fast-food-outline.svg",
         c_name: "Lebensmittel & Getränke",
         hoverr: false
     },
     {
-        icon: "/assets/images/hugeicons_ai-chemistry-01.svg",
+        icon: "/roi-calculator/assets/images/hugeicons_ai-chemistry-01.svg",
         c_name: "Pharma & Chemie",
         hoverr: false
     },
     {
-        icon: "/assets/images/carbon_process.svg",
+        icon: "/roi-calculator/assets/images/carbon_process.svg",
         c_name: "Metall-verarbeltung",
         hoverr: false
     },
     {
-        icon: "/assets/images/streamline-ultimate_factory-building-1.svg",
+        icon: "/roi-calculator/assets/images/streamline-ultimate_factory-building-1.svg",
         c_name: "Andere Branche",
         hoverr: true
     },
@@ -75,25 +75,25 @@ export const production_FlowData = [
 
 export const pressureData = [
     {
-        imgIcon: "/assets/images/noto_beaming-face-with-smiling-eyes.svg",
+        imgIcon: "/roi-calculator/assets/images/noto_beaming-face-with-smiling-eyes.svg",
         text: "Glück gehabt!",
         subtitle: "Selten, vielleicht 1-2x pro Jahr",
         value: ""
     },
     {
-        imgIcon: "/assets/images/noto_confounded-face.svg",
+        imgIcon: "/roi-calculator/assets/images/noto_confounded-face.svg",
         text: "Es nervt.",
         subtitle: "Etwa 1x pro Monat",
         value: "single"
     },
     {
-        imgIcon: "/assets/images/noto_downcast-face-with-sweat.svg",
+        imgIcon: "/roi-calculator/assets/images/noto_downcast-face-with-sweat.svg",
         text: "Dauerzustand",
         subtitle: "Mehrmals im Monat",
         value: "group"
     },
     {
-        imgIcon: "/assets/images/noto_eight-pointed-star.svg",
+        imgIcon: "/roi-calculator/assets/images/noto_eight-pointed-star.svg",
         text: "Katastrophe",
         subtitle: "Wachenitich",
         value: "area"

@@ -4,7 +4,7 @@ import AppRoutes from './routes/AppRoutes'
 
 const App = () => {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/roi-calculator">
       <AppRoutes />
     </BrowserRouter>
   )

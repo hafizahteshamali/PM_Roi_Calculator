@@ -1,12 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { FaCheckCircle } from "react-icons/fa";
 import {
   industries,
   InputStateData,
   pressureData,
-  production_FlowData,
 } from "../assets/ConstantData";
 import { NavLink } from "react-router-dom";
+import { motion } from "framer-motion";
 
 const steps = [
   { id: 1, title: "Eingabezustand" },
@@ -45,10 +45,40 @@ const InputState = () => {
   const [costs, setCosts] = useState(0);
   const [savings, setSavings] = useState(0);
 
+  // Refs for auto-scroll
+  const q2Ref = useRef(null);
+  const q3Ref = useRef(null);
+  const q4Ref = useRef(null);
+
+  // helper function for mobile auto-scroll
+  const scrollToNext = (ref) => {
+    if (window.innerWidth < 768 && ref.current) {
+      setTimeout(() => {
+        ref.current.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }, 200); // thora delay smooth feel ke liye
+    }
+  };
+
   // Enhanced calculation logic
+  // handleCalculate function update
   const handleCalculate = () => {
+    if (!selectedIndustry) {
+      alert("Bitte wählen Sie eine Branche aus!");
+      return;
+    }
     if (!criticalMachines) {
       alert("Bitte wählen Sie eine kritische Maschinenoption aus!");
+      return;
+    }
+    if (!pressure) {
+      alert("Bitte wählen Sie einen Druckwert aus!");
+      return;
+    }
+    if (!area) {
+      alert("Bitte wählen Sie einen Bereich aus!");
       return;
     }
 
@@ -66,7 +96,8 @@ const InputState = () => {
       criticalMachines * avgDowntimeHours * costPerHour * pressure * months;
 
     // Step 2: Apply energy & scrap savings
-    const energyScrapSavings = downtimeCost * (energySavingPercent + scrapSavingPercent);
+    const energyScrapSavings =
+      downtimeCost * (energySavingPercent + scrapSavingPercent);
 
     // Step 3: Total avoidable cost
     downtimeCost = downtimeCost + energyScrapSavings;
@@ -79,6 +110,12 @@ const InputState = () => {
 
     setActiveStep(3);
   };
+
+  useEffect(() => {
+    if (activeStep === 3 && window.innerWidth < 1024) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [activeStep]);
 
   return (
     <div className="w-full lg:h-screen lg:overflow-hidden flex items-center justify-center px-4 sm:px-6 md:px-10 lg:px-20 py-6 sm:py-8 md:py-10">
@@ -181,11 +218,14 @@ const InputState = () => {
                   <h2 className="text-lg font-semibold my-2 text-[#00000081]">
                     1. In welcher Branche ist Ihr Unternehmen tätig?
                   </h2>
-                  <div className="flex flex-wrap justify-start gap-x-5">
+                  <div className="flex flex-wrap justify-between gap-x-5">
                     {industries.map((item, index) => (
                       <button
                         key={index}
-                        onClick={() => setSelectedIndustry(item.c_name)}
+                        onClick={() => {
+                          setSelectedIndustry(item.c_name);
+                          scrollToNext(q2Ref);
+                        }}
                         className={`w-full sm:w-[45%] md:w-[30%] lg:w-[27%] h-[70px] mb-3 flex justify-center items-center gap-2 border border-gray-300 rounded text-sm 
                         ${
                           selectedIndustry === item.c_name
@@ -200,128 +240,156 @@ const InputState = () => {
                   </div>
 
                   {/* Q2 - Critical Machines */}
-                  <h2 className="text-lg font-semibold my-2 text-[#00000081]">
-                    2. Wie viele Ihrer Anlagen sind für den Produktionsfluss absolut kritisch?
-                  </h2>
-                  <div className="flex flex-wrap gap-3">
-                    {criticalOptions.map((option, index) => (
-                      <button
-                        key={index}
-                        onClick={() => setCriticalMachines(option.value)}
-                        className={`flex flex-col justify-center items-start w-full lg:w-[29%] border border-gray-300 rounded px-5 py-3 text-sm 
-                        ${
-                          criticalMachines === option.value
-                            ? "bg-[#F2E4FE]"
-                            : ""
-                        }`}
-                      >
-                        <p className="text-[16px] font-[400] text-left">
-                          {option.label}
-                        </p>
-                        <p className="text-[#00000070]">{option.subtitle}</p>
-                      </button>
-                    ))}
+                  <div ref={q2Ref}>
+                    <h2 className="text-lg font-semibold my-2 text-[#00000081]">
+                      2. Wie viele Ihrer Anlagen sind für den Produktionsfluss
+                      absolut kritisch?
+                    </h2>
+                    <div className="flex flex-wrap gap-3 justify-between">
+                      {criticalOptions.map((option, index) => (
+                        <button
+                          key={index}
+                          onClick={() => {
+                            setCriticalMachines(option.value);
+                            scrollToNext(q3Ref);
+                          }}
+                          className={`flex flex-col justify-center items-start w-full lg:w-[29%] border border-gray-300 rounded px-5 py-3 text-sm 
+                          ${
+                            criticalMachines === option.value
+                              ? "bg-[#F2E4FE]"
+                              : ""
+                          }`}
+                        >
+                          <p className="text-[16px] font-[400] text-left">
+                            {option.label}
+                          </p>
+                          <p className="text-[#00000070]">{option.subtitle}</p>
+                        </button>
+                      ))}
+                    </div>
                   </div>
 
                   {/* Q3 - Slider */}
-                  <h2 className="text-lg font-semibold my-2 text-[#00000081]">
-                    3. Wie oft geraten Sie pro Monat unter Druck?
-                  </h2>
-                  <div className="w-full">
-                    {/* Large screen → horizontal */}
-                    <div className="hidden md:block w-full">
-                      <input
-                        type="range"
-                        min="1"
-                        max="4"
-                        step="1"
-                        value={pressure}
-                        onChange={(e) => setPressure(Number(e.target.value))}
-                        className="w-full h-1 accent-[#382A4D]"
-                      />
-                      <div className="flex justify-between text-xs sm:text-sm text-gray-600 mt-2">
-                        {pressureData.map((item, index) => (
-                          <div
-                            key={index}
-                            className="flex justify-center items-center gap-2 w-max"
-                          >
-                            <img src={item.imgIcon} alt="" />
-                            <div className="flex flex-col justify-start items-start">
-                              <p>{item.text}</p>
-                              <p className="text-[#00000081] text-sm">
-                                {item.subtitle}
-                              </p>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Mobile → vertical */}
-                    <div className="flex md:hidden flex-row items-center gap-4 w-full">
-                      <div className="h-[220px] flex items-center">
+                  <div ref={q3Ref}>
+                    <h2 className="text-lg font-semibold my-2 text-[#00000081]">
+                      3. Wie oft geraten Sie pro Monat unter Druck?
+                    </h2>
+                    <div className="w-full">
+                      {/* Large screen → horizontal */}
+                      <div className="hidden md:block w-full">
                         <input
                           type="range"
                           min="1"
                           max="4"
                           step="1"
                           value={pressure}
-                          onChange={(e) => setPressure(Number(e.target.value))}
-                          orient="vertical"
-                          className="appearance-none w-2 h-[220px] accent-[#382A4D]"
-                          style={{
-                            writingMode: "bt-lr",
-                            WebkitAppearance: "slider-vertical",
+                          onChange={(e) => {
+                            setPressure(Number(e.target.value));
+                            scrollToNext(q4Ref);
                           }}
+                          className="w-full h-1 accent-[#382A4D]"
                         />
+                        <div className="flex justify-between text-xs sm:text-sm text-gray-600 mt-2">
+                          {pressureData.map((item, index) => (
+                            <div
+                              key={index}
+                              className="flex justify-center items-center gap-2 w-max"
+                            >
+                              <img src={item.imgIcon} alt="" />
+                              <div className="flex flex-col justify-start items-start">
+                                <p>{item.text}</p>
+                                <p className="text-[#00000081] text-sm">
+                                  {item.subtitle}
+                                </p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
                       </div>
 
-                      {/* Text Content */}
-                      <div className="flex flex-col justify-between text-xs sm:text-sm text-gray-600 w-full gap-4">
-                        {pressureData.map((item, index) => (
-                          <div
-                            key={index}
-                            className="flex justify-start items-center gap-2"
-                          >
-                            <img src={item.imgIcon} alt="" />
-                            <div className="flex flex-col justify-start items-start">
-                              <p>{item.text}</p>
-                              <p className="text-[#00000081] text-sm">
-                                {item.subtitle}
-                              </p>
+                      {/* Mobile → vertical */}
+                      <div className="flex md:hidden flex-row items-center gap-4 w-full">
+                        <div className="h-[220px] flex items-center">
+                          <input
+                            type="range"
+                            min="1"
+                            max="4"
+                            step="1"
+                            value={pressure}
+                            onChange={(e) => {
+                              setPressure(Number(e.target.value));
+                              scrollToNext(q4Ref);
+                            }}
+                            orient="vertical"
+                            className="appearance-none w-2 h-[220px] accent-[#382A4D]"
+                            style={{
+                              writingMode: "bt-lr",
+                              WebkitAppearance: "slider-vertical",
+                            }}
+                          />
+                        </div>
+
+                        {/* Text Content */}
+                        <div className="flex flex-col justify-between text-xs sm:text-sm text-gray-600 w-full gap-4">
+                          {pressureData.map((item, index) => (
+                            <div
+                              key={index}
+                              className="flex justify-start items-center gap-2"
+                            >
+                              <img src={item.imgIcon} alt="" />
+                              <div className="flex flex-col justify-start items-start">
+                                <p>{item.text}</p>
+                                <p className="text-[#00000081] text-sm">
+                                  {item.subtitle}
+                                </p>
+                              </div>
                             </div>
-                          </div>
-                        ))}
+                          ))}
+                        </div>
                       </div>
                     </div>
                   </div>
 
                   {/* Q4 */}
-                  <h2 className="text-lg font-semibold mt-5 mb-2 text-[#00000081]">
-                    4. Wie viele Ihrer Anlagen sind für den Produktionsfluss absolut kritisch?
-                  </h2>
-                  <select
-                    value={area}
-                    onChange={(e) => setArea(e.target.value)}
-                    className="w-full border border-gray-300 rounded bg-[#F2E4FE] p-3 mb-2 outline-none"
-                  >
-                    <option value="">Bitte wählen...</option>
-                    <option value="single">
-                      Eine einzelne Schlüsselmaschine
-                    </option>
-                    <option value="group">
-                      Eine kleine Gruppe (3–5 Maschinen)
-                    </option>
-                    <option value="area">
-                      Ein gesamter Bereich (&gt;10 Maschinen)
-                    </option>
-                  </select>
+                  <div ref={q4Ref}>
+                    <h2 className="text-lg font-semibold mt-5 mb-2 text-[#00000081]">
+                      4. Wie viele Ihrer Anlagen sind für den Produktionsfluss
+                      absolut kritisch?
+                    </h2>
+                    <select
+                      value={area}
+                      onChange={(e) => setArea(e.target.value)}
+                      className="w-full border border-gray-300 rounded bg-[#F2E4FE] p-3 mb-2 outline-none"
+                    >
+                      <option value="">Bitte wählen...</option>
+                      <option value="single">
+                        Eine einzelne Schlüsselmaschine
+                      </option>
+                      <option value="group">
+                        Eine kleine Gruppe (3–5 Maschinen)
+                      </option>
+                      <option value="area">
+                        Ein gesamter Bereich (&gt;10 Maschinen)
+                      </option>
+                    </select>
+                  </div>
 
                   {/* Calculate button */}
                   <div className="w-full flex justify-end items-center">
                     <button
                       onClick={handleCalculate}
-                      className="w-full lg:w-[30%] bg-[#382A4D] hover:bg-[#382a4de0] text-white px-6 py-3 rounded shadow-md font-medium"
+                      disabled={
+                        !selectedIndustry ||
+                        !criticalMachines ||
+                        !pressure ||
+                        !area
+                      }
+                      className={`w-full lg:w-[30%] px-6 py-3 rounded shadow-md font-medium
+      ${
+        !selectedIndustry || !criticalMachines || !pressure || !area
+          ? "bg-gray-400 cursor-not-allowed"
+          : "bg-[#382A4D] hover:bg-[#382a4de0] text-white"
+      }`}
                     >
                       Jetzt Berechnen
                     </button>
@@ -332,11 +400,33 @@ const InputState = () => {
 
             {/* Step 3 - Results */}
             {activeStep === 3 && (
-              <div className="p-6 w-full flex flex-col justify-center items-center">
+              <motion.div
+                className="p-6 w-full flex flex-col justify-center items-center"
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+              >
                 {/* Result Boxes */}
-                <div className="flex flex-col lg:flex-row justify-around items-center gap-6 w-full mb-8">
+                <motion.div
+                  className="flex flex-col lg:flex-row justify-around items-center gap-6 w-full mb-8"
+                  initial="hidden"
+                  animate="visible"
+                  variants={{
+                    hidden: {},
+                    visible: {
+                      transition: { staggerChildren: 0.3 },
+                    },
+                  }}
+                >
                   {/* Kosten Box */}
-                  <div className="flex flex-col justify-center items-center h-[250px] w-full sm:w-[80%] md:w-[70%] lg:w-[33%] bg-[#FBFBFB] shadow-md rounded-xl p-6 border border-gray-200 text-center">
+                  <motion.div
+                    variants={{
+                      hidden: { opacity: 0, scale: 0.8 },
+                      visible: { opacity: 1, scale: 1 },
+                    }}
+                    transition={{ duration: 0.6 }}
+                    className="flex flex-col justify-center items-center h-[250px] w-full sm:w-[80%] md:w-[70%] lg:w-[33%] bg-[#FBFBFB] shadow-md rounded-xl p-6 border border-gray-200 text-center"
+                  >
                     <p className="text-black text-sm mb-2 font-[700]">
                       Ihre vermeidbaren Kosten pro Jahr:
                     </p>
@@ -344,7 +434,7 @@ const InputState = () => {
                       {costs.toLocaleString()} €
                     </h3>
                     <img
-                      src="/assets/images/bar.svg"
+                      src="/roi-calculator/assets/images/bar.svg"
                       alt=""
                       className="max-h-[120px] my-2"
                     />
@@ -352,15 +442,32 @@ const InputState = () => {
                       Ungeplante Stillstände und Reparaturen schlagen hier zu
                       Buche.
                     </p>
-                  </div>
+                  </motion.div>
 
                   {/* Arrow → only visible on large screens */}
-                  <div className="hidden lg:flex items-center justify-center text-3xl text-gray-500">
-                    <img src="/assets/images/formkit_arrowright.png" alt="" />
-                  </div>
+                  <motion.div
+                    variants={{
+                      hidden: { opacity: 0, x: -20 },
+                      visible: { opacity: 1, x: 0 },
+                    }}
+                    transition={{ duration: 0.6 }}
+                    className="hidden lg:flex items-center justify-center text-3xl text-gray-500"
+                  >
+                    <img
+                      src="/roi-calculator/assets/images/formkit_arrowright.png"
+                      alt=""
+                    />
+                  </motion.div>
 
                   {/* Einsparpotenzial Box */}
-                  <div className="flex flex-col justify-center items-center h-[250px] w-full sm:w-[80%] md:w-[70%] lg:w-[33%] bg-white shadow-md rounded-xl p-6 border border-gray-200 text-center">
+                  <motion.div
+                    variants={{
+                      hidden: { opacity: 0, scale: 0.8 },
+                      visible: { opacity: 1, scale: 1 },
+                    }}
+                    transition={{ duration: 0.6 }}
+                    className="flex flex-col justify-center items-center h-[250px] w-full sm:w-[80%] md:w-[70%] lg:w-[33%] bg-white shadow-md rounded-xl p-6 border border-gray-200 text-center"
+                  >
                     <p className="text-black text-sm mb-2 font-[700]">
                       Ihr mögliches Einsparpotenzial:
                     </p>
@@ -368,7 +475,7 @@ const InputState = () => {
                       {savings.toLocaleString()} €
                     </h3>
                     <img
-                      src="/assets/images/streamline-ultimate-color_saving-money-flower.svg"
+                      src="/roi-calculator/assets/images/streamline-ultimate-color_saving-money-flower.svg"
                       alt=""
                       className="max-h-[120px] my-2"
                     />
@@ -376,23 +483,33 @@ const InputState = () => {
                       (bei nur 60 % Vermeidung von Ausfällen konservativ
                       gerechnet)
                     </p>
-                  </div>
-                </div>
+                  </motion.div>
+                </motion.div>
 
                 {/* Info Text */}
-                <p className="text-gray-700 text-center text-base sm:text-lg md:text-xl font-medium leading-relaxed mb-6 w-full sm:w-[80%] md:w-[70%] lg:w-[70%] mx-auto">
+                <motion.p
+                  className="text-gray-700 text-center text-base sm:text-lg md:text-xl font-medium leading-relaxed mb-6 w-full sm:w-[80%] md:w-[70%] lg:w-[70%] mx-auto"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 1, duration: 0.8 }}
+                >
                   Predictive Maintenance bedeutet: weniger Ausfälle, planbare
                   Wartung, mehr Produktion. Schon ein einzelner Pilotstart
                   zeigt, wie schnell sich das rechnet.
-                </p>
+                </motion.p>
 
                 {/* CTA Button */}
-                <div className="flex justify-center">
+                <motion.div
+                  className="flex justify-center"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 1.3, duration: 0.6 }}
+                >
                   <button className="bg-[#382A4D] hover:bg-purple-700 text-white px-6 sm:px-10 py-3 rounded-lg shadow-md font-medium text-sm sm:text-base">
                     Ja, ich will meine kostenlose Strategie
                   </button>
-                </div>
-              </div>
+                </motion.div>
+              </motion.div>
             )}
           </div>
 
@@ -400,7 +517,7 @@ const InputState = () => {
           <div className="w-full lg:w-[25%] rounded-xl flex flex-col justify-start items-start text-center lg:text-left">
             <NavLink to="/input_state" className="mb-4 h-[150px]">
               <img
-                src="/assets/images/sclera_logo.svg"
+                src="/roi-calculator/assets/images/sclera_logo.svg"
                 alt=""
                 className="mx-auto lg:mx-0"
               />
@@ -415,9 +532,9 @@ const InputState = () => {
             </p>
             <div className="h-[400px] sm:h-[220px] md:h-[310px] w-full mx-auto flex justify-center items-center">
               <img
-                src="/assets/images/production_img.png"
-                className="object-contain max-h-full"
+                src="/roi-calculator/assets/images/production_img.png"
                 alt=""
+                className="object-cover h-full w-full rounded-xl"
               />
             </div>
           </div>
