@@ -32,6 +32,64 @@ const criticalOptions = [
   },
 ];
 
+// Animation variants
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.5,
+      ease: "easeOut"
+    }
+  }
+};
+
+const buttonVariants = {
+  hidden: { opacity: 0, scale: 0.8 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: {
+      duration: 0.4
+    }
+  },
+  hover: {
+    scale: 1.02,
+    backgroundColor: "#F2E4FE",
+    transition: {
+      duration: 0.2
+    }
+  },
+  selected: {
+    backgroundColor: "#F2E4FE",
+    scale: 1.02,
+    transition: {
+      duration: 0.2
+    }
+  }
+};
+
+const sliderVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      duration: 0.6
+    }
+  }
+};
+
 const InputState = () => {
   const [activeStep, setActiveStep] = useState(1);
 
@@ -121,7 +179,7 @@ const InputState = () => {
     <div className="w-full lg:h-screen lg:overflow-hidden flex items-center justify-center px-4 sm:px-6 md:px-10 lg:px-20 py-6 sm:py-8 md:py-10">
       <div className="lg:h-[95vh] w-full lg:w-[100%]">
         {/* Stepper */}
-        <div className="w-full sm:w-[90%] lg:w-[95%] flex flex-row flex-wrap items-center justify-center mb-5 gap-5">
+        <div className="w-full sm:w-[100%] lg:w-[95%] flex flex-row flex-wrap items-center justify-center mb-5 gap-5">
           {steps.map((step, index) => (
             <div
               key={step.id}
@@ -144,7 +202,7 @@ const InputState = () => {
 
               {/* Title */}
               <p
-                className={`ml-2 text-sm sm:text-base lg:text-[16px] whitespace-nowrap
+                className={`ml-2 text-sm sm:text-[14px] lg:text-[16px] whitespace-nowrap
                 ${
                   activeStep === step.id
                     ? "text-[#382A4D] font-semibold"
@@ -212,15 +270,26 @@ const InputState = () => {
 
             {/* Step 2 */}
             {activeStep === 2 && (
-              <div className="w-full mx-auto bg-white px-5 py-1 rounded">
+              <motion.div 
+                className="w-full mx-auto bg-white px-5 py-1 rounded"
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible"
+              >
                 <div className="w-[95%] mx-auto">
                   {/* Q1 */}
-                  <h2 className="text-lg font-semibold my-2 text-[#00000081]">
+                  <motion.h2 
+                    className="text-lg font-semibold my-2 text-[#00000081]"
+                    variants={itemVariants}
+                  >
                     1. In welcher Branche ist Ihr Unternehmen tätig?
-                  </h2>
-                  <div className="flex flex-wrap justify-between gap-x-5">
+                  </motion.h2>
+                  <motion.div 
+                    className="flex flex-wrap justify-between gap-x-5"
+                    variants={containerVariants}
+                  >
                     {industries.map((item, index) => (
-                      <button
+                      <motion.button
                         key={index}
                         onClick={() => {
                           setSelectedIndustry(item.c_name);
@@ -232,22 +301,31 @@ const InputState = () => {
                             ? "bg-[#F2E4FE]"
                             : "hover:bg-purple-50"
                         }`}
+                        variants={buttonVariants}
+                        whileHover="hover"
+                        animate={selectedIndustry === item.c_name ? "selected" : ""}
                       >
                         <img src={item.icon} alt="" />
                         <span>{item.c_name}</span>
-                      </button>
+                      </motion.button>
                     ))}
-                  </div>
+                  </motion.div>
 
                   {/* Q2 - Critical Machines */}
-                  <div ref={q2Ref}>
+                  <motion.div 
+                    ref={q2Ref}
+                    variants={itemVariants}
+                  >
                     <h2 className="text-lg font-semibold my-2 text-[#00000081]">
                       2. Wie viele Ihrer Anlagen sind für den Produktionsfluss
                       absolut kritisch?
                     </h2>
-                    <div className="flex flex-wrap gap-3 justify-between">
+                    <motion.div 
+                      className="flex flex-wrap gap-3 justify-between"
+                      variants={containerVariants}
+                    >
                       {criticalOptions.map((option, index) => (
-                        <button
+                        <motion.button
                           key={index}
                           onClick={() => {
                             setCriticalMachines(option.value);
@@ -259,25 +337,31 @@ const InputState = () => {
                               ? "bg-[#F2E4FE]"
                               : ""
                           }`}
+                          variants={buttonVariants}
+                          whileHover="hover"
+                          animate={criticalMachines === option.value ? "selected" : ""}
                         >
                           <p className="text-[16px] font-[400] text-left">
                             {option.label}
                           </p>
                           <p className="text-[#00000070]">{option.subtitle}</p>
-                        </button>
+                        </motion.button>
                       ))}
-                    </div>
-                  </div>
+                    </motion.div>
+                  </motion.div>
 
                   {/* Q3 - Slider */}
-                  <div ref={q3Ref}>
+                  <motion.div 
+                    ref={q3Ref}
+                    variants={sliderVariants}
+                  >
                     <h2 className="text-lg font-semibold my-2 text-[#00000081]">
                       3. Wie oft geraten Sie pro Monat unter Druck?
                     </h2>
                     <div className="w-full">
                       {/* Large screen → horizontal */}
                       <div className="hidden md:block w-full">
-                        <input
+                        <motion.input
                           type="range"
                           min="1"
                           max="4"
@@ -288,12 +372,14 @@ const InputState = () => {
                             scrollToNext(q4Ref);
                           }}
                           className="w-full h-1 accent-[#382A4D]"
+                          whileFocus={{ scale: 1.02 }}
                         />
                         <div className="flex justify-between text-xs sm:text-sm text-gray-600 mt-2">
                           {pressureData.map((item, index) => (
-                            <div
+                            <motion.div
                               key={index}
                               className="flex justify-center items-center gap-2 w-max"
+                              whileHover={{ scale: 1.05 }}
                             >
                               <img src={item.imgIcon} alt="" />
                               <div className="flex flex-col justify-start items-start">
@@ -302,7 +388,7 @@ const InputState = () => {
                                   {item.subtitle}
                                 </p>
                               </div>
-                            </div>
+                            </motion.div>
                           ))}
                         </div>
                       </div>
@@ -310,7 +396,7 @@ const InputState = () => {
                       {/* Mobile → vertical */}
                       <div className="flex md:hidden flex-row items-center gap-4 w-full">
                         <div className="h-[220px] flex items-center">
-                          <input
+                          <motion.input
                             type="range"
                             min="1"
                             max="4"
@@ -326,15 +412,17 @@ const InputState = () => {
                               writingMode: "bt-lr",
                               WebkitAppearance: "slider-vertical",
                             }}
+                            whileFocus={{ scale: 1.05 }}
                           />
                         </div>
 
                         {/* Text Content */}
                         <div className="flex flex-col justify-between text-xs sm:text-sm text-gray-600 w-full gap-4">
                           {pressureData.map((item, index) => (
-                            <div
+                            <motion.div
                               key={index}
                               className="flex justify-start items-center gap-2"
+                              whileHover={{ scale: 1.02 }}
                             >
                               <img src={item.imgIcon} alt="" />
                               <div className="flex flex-col justify-start items-start">
@@ -343,23 +431,27 @@ const InputState = () => {
                                   {item.subtitle}
                                 </p>
                               </div>
-                            </div>
+                            </motion.div>
                           ))}
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </motion.div>
 
                   {/* Q4 */}
-                  <div ref={q4Ref}>
+                  <motion.div 
+                    ref={q4Ref}
+                    variants={itemVariants}
+                  >
                     <h2 className="text-lg font-semibold mt-5 mb-2 text-[#00000081]">
                       4. Wie viele Ihrer Anlagen sind für den Produktionsfluss
                       absolut kritisch?
                     </h2>
-                    <select
+                    <motion.select
                       value={area}
                       onChange={(e) => setArea(e.target.value)}
                       className="w-full border border-gray-300 rounded bg-[#F2E4FE] p-3 mb-2 outline-none"
+                      whileFocus={{ scale: 1.02 }}
                     >
                       <option value="">Bitte wählen...</option>
                       <option value="single">
@@ -371,12 +463,15 @@ const InputState = () => {
                       <option value="area">
                         Ein gesamter Bereich (&gt;10 Maschinen)
                       </option>
-                    </select>
-                  </div>
+                    </motion.select>
+                  </motion.div>
 
                   {/* Calculate button */}
-                  <div className="w-full flex justify-end items-center">
-                    <button
+                  <motion.div 
+                    className="w-full flex justify-end items-center"
+                    variants={itemVariants}
+                  >
+                    <motion.button
                       onClick={handleCalculate}
                       disabled={
                         !selectedIndustry ||
@@ -385,17 +480,27 @@ const InputState = () => {
                         !area
                       }
                       className={`w-full lg:w-[30%] px-6 py-3 rounded shadow-md font-medium
-      ${
-        !selectedIndustry || !criticalMachines || !pressure || !area
-          ? "bg-gray-400 cursor-not-allowed"
-          : "bg-[#382A4D] hover:bg-[#382a4de0] text-white"
-      }`}
+                      ${
+                        !selectedIndustry || !criticalMachines || !pressure || !area
+                          ? "bg-gray-400 cursor-not-allowed"
+                          : "bg-[#382A4D] hover:bg-[#382a4de0] text-white"
+                      }`}
+                      whileHover={
+                        !selectedIndustry || !criticalMachines || !pressure || !area
+                        ? {}
+                        : { scale: 1.03 }
+                      }
+                      whileTap={
+                        !selectedIndustry || !criticalMachines || !pressure || !area
+                        ? {}
+                        : { scale: 0.98 }
+                      }
                     >
                       Jetzt Berechnen
-                    </button>
-                  </div>
+                    </motion.button>
+                  </motion.div>
                 </div>
-              </div>
+              </motion.div>
             )}
 
             {/* Step 3 - Results */}
