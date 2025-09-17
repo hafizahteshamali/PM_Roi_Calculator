@@ -5,7 +5,7 @@ import {
   InputStateData,
   pressureData,
 } from "../assets/ConstantData";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
 const steps = [
@@ -98,6 +98,8 @@ const InputState = () => {
   const [criticalMachines, setCriticalMachines] = useState(null);
   const [pressure, setPressure] = useState(1);
   const [area, setArea] = useState("");
+
+  const navigate = useNavigate();
 
   // results
   const [costs, setCosts] = useState(0);
@@ -610,7 +612,7 @@ const InputState = () => {
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 1.3, duration: 0.6 }}
                 >
-                  <button className="bg-[#382A4D] hover:bg-purple-700 text-white px-6 sm:px-10 py-3 rounded-lg shadow-md font-medium text-sm sm:text-base">
+                  <button onClick={()=>navigate('/next-steps')} className="bg-[#382A4D] hover:bg-purple-700 text-white px-6 sm:px-10 py-3 rounded-lg shadow-md font-medium text-sm sm:text-base">
                     Ja, ich will meine kostenlose Strategie
                   </button>
                 </motion.div>
