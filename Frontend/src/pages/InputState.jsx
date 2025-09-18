@@ -171,11 +171,14 @@ const InputState = () => {
     setActiveStep(3);
   };
 
-  useEffect(() => {
-    if (activeStep === 3 && window.innerWidth < 1024) {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-  }, [activeStep]);
+  // Replace your old useEffect with this
+useEffect(() => {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
+}, [activeStep]);
+
 
   return (
     <div className="w-full lg:h-screen lg:overflow-hidden flex items-center justify-center px-4 sm:px-6 md:px-10 lg:px-20 py-6 sm:py-8 md:py-10">
